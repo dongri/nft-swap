@@ -1,0 +1,208 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0xCE7573F3eB5aBdED4FcF4E260a08CaC5281A784a",
+    "txHash": "0x6f9259a996d7c640d16c036f018011983b11f87feb6d96381b9a8dfe2440657e"
+  },
+  "proxies": [
+    {
+      "address": "0xd18C46F5C3babC6D6Cd074f48E0114db3e1FCe7e",
+      "txHash": "0x7ddcdbeb5545a1d234ad5fb53572b5cbeff4fa62d304c026b221c24626ce4890",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "e7b975a8b38968adcdc88b7922198cd478eefd893bde4682cfd73e8045d8a830": {
+      "address": "0x2FEc320302C4A0ffC89fC278cacd13123558eEe8",
+      "txHash": "0xb86a432caf0df6b13d6107320754370f9394ece36643316979d4f1dda1bb150f",
+      "layout": {
+        "solcVersion": "0.8.9",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "separator",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_string_storage",
+            "contract": "NFTSwap",
+            "src": "contracts/nft-swap.sol:12"
+          },
+          {
+            "label": "orders",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_string_memory_ptr,t_string_storage)",
+            "contract": "NFTSwap",
+            "src": "contracts/nft-swap.sol:14"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_string_memory_ptr,t_string_storage)": {
+            "label": "mapping(string => string)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "a7103a17ce8301f4152b74c71f560e5e2eb0327cdc96999e74d473f91d055919": {
+      "address": "0x2b94A84ec64F0c6cdf6DeAD0B2C3629220a87faf",
+      "txHash": "0xe1a41b0abb1b1f467767de904d7e921aac4d49fd56ba3e6b3e9877880e7e62e8",
+      "layout": {
+        "solcVersion": "0.8.9",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "separator",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_string_storage",
+            "contract": "NFTSwap",
+            "src": "contracts/nft-swap.sol:12"
+          },
+          {
+            "label": "orders",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_string_memory_ptr,t_string_storage)",
+            "contract": "NFTSwap",
+            "src": "contracts/nft-swap.sol:14"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_string_memory_ptr,t_string_storage)": {
+            "label": "mapping(string => string)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "0b023b483d4af7806664f1558602cdc707975bd4190611e76669e8c0209d9931": {
+      "address": "0x88a95c2b814Bf59BD0c150C6940668D2f970AF72",
+      "txHash": "0x1137f7551ec0ea9b2b7730648b64105f74d08ff758174e9319b52ec2ac90b17c",
+      "layout": {
+        "solcVersion": "0.8.9",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "separator",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_string_storage",
+            "contract": "NFTSwap",
+            "src": "contracts/nft-swap.sol:12"
+          },
+          {
+            "label": "orders",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_string_memory_ptr,t_string_storage)",
+            "contract": "NFTSwap",
+            "src": "contracts/nft-swap.sol:14"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_string_memory_ptr,t_string_storage)": {
+            "label": "mapping(string => string)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    }
+  }
+}
