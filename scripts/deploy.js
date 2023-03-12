@@ -2,7 +2,7 @@ const { ethers, upgrades } = require("hardhat");
 
 async function main() {
 
-  // First time
+  // // First time
   // const NFTSwap = await ethers.getContractFactory("NFTSwap");
   // const token = await upgrades.deployProxy(NFTSwap);
   // await token.deployed();
@@ -10,7 +10,7 @@ async function main() {
 
   // Second time
   const NFTSwap = await ethers.getContractFactory("NFTSwap");
-  const token = await upgrades.upgradeProxy('0xd18C46F5C3babC6D6Cd074f48E0114db3e1FCe7e', NFTSwap);
+  const token = await upgrades.upgradeProxy('0x063Fdaf96C2Ff9F6a84a6b3D67473D4D61997b81', NFTSwap);
   await token.deployed();
   console.log(`NFTSwap deployed to ${token.address}`);
 

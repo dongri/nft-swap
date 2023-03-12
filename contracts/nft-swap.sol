@@ -3,103 +3,64 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import './strings.sol';
 
 contract NFTSwap is Initializable {
 
-    using strings for *;
-
-    string private separator;
-
-    mapping(string => string) private orders;
-
-    event SwapRequested(string _nftA, string _nftB);
-    event SwapAccepted(string _nftA, string _nftB);
-
-    // constructor() initializer {}
-
-    function initialize() public initializer {
-        separator = "/";
+    struct ReleaseNFT {
+        address erc721Address;
+        uint256 tokenId;
     }
 
-    function RequestSwap(address _erc721AddressA, address _erc721AddressB, uint256 _tokenIdA, uint256 _tokenIdB) public {
-        string memory _nftA = string(abi.encodePacked(_erc721AddressA, separator, _tokenIdA));
-        string memory _nftB = string(abi.encodePacked(_erc721AddressB, separator, _tokenIdB));
+    mapping(string => ReleaseNFT) private swapRequests;
 
-        request(_nftA, _nftB);
+    event EventCreateRequest(address desiredERC721Address, uint256 desiredTokenId, address releaseERC721Address, uint256 releaseTokenId);
+    event EventCancelRequest(address desiredERC721Address, uint256 desiredTokenId, address releaseERC721Address, uint256 releaseTokenId);
+    event EventAcceptRequest(address desiredERC721Address, uint256 desiredTokenId, address releaseERC721Address, uint256 releaseTokenId);
+
+    function initialize() public initializer {}
+
+    function CreateRequest(address _desiredERC721Address, uint256 _desiredTokenId, address _releaseERC721Address, uint256 _releaseTokenId) public {
+        ERC721 releaseContract = ERC721(_releaseERC721Address);
+        address releaseOwner = releaseContract.ownerOf(_releaseTokenId);
+        require(releaseOwner == msg.sender, "NFT is not owned by sender");
+        address operator = releaseContract.getApproved(_releaseTokenId);
+        require(operator == address(this), "Token is not approved for swap");
+        string memory desiredKey = string(abi.encodePacked(_desiredERC721Address, _desiredTokenId));
+        ReleaseNFT memory releaseNFT = ReleaseNFT(_releaseERC721Address, _releaseTokenId);
+        swapRequests[desiredKey] = releaseNFT;
+        emit EventCreateRequest(_desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
     }
 
-    function request(string memory _nftA, string memory _nftB) private {
-        require(keccak256(abi.encodePacked(orders[_nftA])) == keccak256(abi.encodePacked("")), "NFT A already has a swap request");
-        orders[_nftA] = _nftB;
-
-        emit SwapRequested(_nftA, _nftB);
+    function CancelRequest(address _desiredERC721Address, uint256 _desiredTokenId, address _releaseERC721Address, uint256 _releaseTokenId) public {
+        string memory desiredKey = string(abi.encodePacked(_desiredERC721Address, _desiredTokenId));
+        ReleaseNFT memory releaseNFT = swapRequests[desiredKey];
+        require(releaseNFT.erc721Address == _releaseERC721Address && releaseNFT.tokenId == _releaseTokenId, "NFT A does not have a swap request"); 
+        delete swapRequests[desiredKey];
+        emit EventCancelRequest(_desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
     }
 
-    function AcceptSwap(address _erc721AddressA, address _erc721AddressB, uint256 _tokenIdA, uint256 _tokenIdB) public {
-        string memory _nftA = string(abi.encodePacked(_erc721AddressA, separator, _tokenIdA));
-        string memory _nftB = string(abi.encodePacked(_erc721AddressB, separator, _tokenIdB));
+    function AcceptRequest(address _desiredERC721Address, uint256 _desiredTokenId) public {
+        string memory desiredKey = string(abi.encodePacked(_desiredERC721Address, _desiredTokenId));
+        require(swapRequests[desiredKey].erc721Address != address(0), "NFT A does not have a swap request");
 
-        // accept(_nftA, _nftB);
+        ERC721 desiredContract = ERC721(_desiredERC721Address);
+        ReleaseNFT memory releaseNFT = swapRequests[desiredKey];
+        address releaseERC721Address = releaseNFT.erc721Address;
+        ERC721 releaseContract = ERC721(releaseERC721Address);
+        uint256 releaseTokenId = releaseNFT.tokenId;
 
-        require(keccak256(abi.encodePacked(orders[_nftA])) == keccak256(abi.encodePacked(_nftB)), "NFT A does not have a swap request for NFT B");
-        orders[_nftA] = "";
+        address desiredOwner = desiredContract.ownerOf(_desiredTokenId);
+        address releaseOwner = releaseContract.ownerOf(releaseTokenId);
 
-        // string memory addressA = _nftA.toSlice().split(separator.toSlice()).toString();
-        // string memory tokenA = _nftA.toSlice().split(separator.toSlice()).toString();
-        // string memory addressB = _nftB.toSlice().split(separator.toSlice()).toString();
-        // string memory tokenB = _nftB.toSlice().split(separator.toSlice()).toString();
-
-        // address nftAddressA = stringToAddress(addressA);
-        // address nftAddressB = stringToAddress(addressB);
-        // uint256 nftTokenA = stringToUint(tokenA);
-        // uint256 nftTokenB = stringToUint(tokenB);
-
-        ERC721 nftContractA = ERC721(_erc721AddressA);
-        ERC721 nftContractB = ERC721(_erc721AddressB);
+        require(desiredOwner == msg.sender, "NFT is not owned by sender");
         
-        address nftAOwner = nftContractA.ownerOf(_tokenIdA);
-        address nftBOwner = nftContractB.ownerOf(_tokenIdB);
+        address operator = desiredContract.getApproved(_desiredTokenId);
+        require(operator == address(this), "Token is not approved for swap");
 
-        nftContractA.safeTransferFrom(nftAOwner, nftBOwner, _tokenIdA);
-        nftContractB.safeTransferFrom(nftBOwner, nftAOwner, _tokenIdB);
-
-
-        emit SwapAccepted(_nftA, _nftB);
-    }
-
-    function accept(string memory _nftA, string memory _nftB) public {
-        require(keccak256(abi.encodePacked(orders[_nftA])) == keccak256(abi.encodePacked(_nftB)), "NFT A does not have a swap request for NFT B");
-        orders[_nftA] = "";
-
-        string memory addressA = _nftA.toSlice().split(separator.toSlice()).toString();
-        string memory tokenA = _nftA.toSlice().split(separator.toSlice()).toString();
-        string memory addressB = _nftB.toSlice().split(separator.toSlice()).toString();
-        string memory tokenB = _nftB.toSlice().split(separator.toSlice()).toString();
-
-        address nftAddressA = stringToAddress(addressA);
-        address nftAddressB = stringToAddress(addressB);
-        uint256 nftTokenA = stringToUint(tokenA);
-        uint256 nftTokenB = stringToUint(tokenB);
-
-        ERC721 nftContractA = ERC721(nftAddressA);
-        ERC721 nftContractB = ERC721(nftAddressB);
-        
-        address nftAOwner = nftContractA.ownerOf(nftTokenA);
-        address nftBOwner = nftContractB.ownerOf(nftTokenB);
-
-        nftContractA.safeTransferFrom(nftAOwner, nftBOwner, nftTokenA);
-        nftContractB.safeTransferFrom(nftBOwner, nftAOwner, nftTokenB);
-
-    }
-
-    function stringToAddress(string memory _address) public pure returns (address) {
-        bytes memory tmp = abi.encodePacked(_address);
-        return abi.decode(tmp, (address));
-    }
-
-    function stringToUint(string memory s) public pure returns (uint256) {
-        return uint256(keccak256(bytes(s)));
+        desiredContract.safeTransferFrom(desiredOwner, releaseOwner, _desiredTokenId);
+        releaseContract.safeTransferFrom(releaseOwner, desiredOwner, releaseTokenId);
+        delete swapRequests[desiredKey];
+        emit EventAcceptRequest(_desiredERC721Address, _desiredTokenId, releaseERC721Address, releaseTokenId);
     }
 
 }
