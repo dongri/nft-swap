@@ -23,10 +23,13 @@ contract NFTSwap is Initializable {
 
     function CreateRequest(address _desiredERC721Address, uint256 _desiredTokenId, address _releaseERC721Address, uint256 _releaseTokenId) public {
         ERC721 releaseContract = ERC721(_releaseERC721Address);
+
         address releaseOwner = releaseContract.ownerOf(_releaseTokenId);
         require(releaseOwner == msg.sender, "NFT is not owned by sender");
+
         address operator = releaseContract.getApproved(_releaseTokenId);
         require(operator == address(this), "Token is not approved for swap");
+
         SwapNFT memory swapNFT = SwapNFT(_desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
         swaps[msg.sender].push(swapNFT);
         emit EventCreateRequest(_desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
