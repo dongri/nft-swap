@@ -10,7 +10,7 @@ async function main() {
 
   // Second time
   const NFTSwap = await ethers.getContractFactory("NFTSwap");
-  const token = await upgrades.upgradeProxy('0x063Fdaf96C2Ff9F6a84a6b3D67473D4D61997b81', NFTSwap);
+  const token = await upgrades.upgradeProxy('0x752f365FA73D28AC27dE2904280BC2F37992B195', NFTSwap);
   await token.deployed();
   console.log(`NFTSwap deployed to ${token.address}`);
 
