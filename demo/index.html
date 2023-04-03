@@ -9,6 +9,32 @@
   <script src="./web3.min.js"></script>
   <script src="./script.js"></script>
 
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      max-width: 60%;
+      margin: 0 auto;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    div {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    label {
+      margin: 5px;
+    }
+    input {
+      margin: 5px;
+    }
+    input[type=button] {
+      padding: 10px;
+    }
+  </style>
 </head>
 <body>
   <h1>NFT Swap</h1>
@@ -30,12 +56,9 @@
     </div>
   </form>
 
+  <h2>Wallet A</h2>
   <div>
     <input type="button" value="createRequest" onclick="createRequest()">
-  </div>
-
-  <div>
-    <input type="button" value="acceptRequest" onclick="acceptRequest()">
   </div>
 
   <div>
@@ -47,9 +70,14 @@
     <div id="log-getSwapsByReleaseOwner"></div>
   </div>
 
+  <h2>Wallet B</h2>
   <div>
     <input type="button" value="getSwapsByDesiredOwner" onclick="getSwapsByDesiredOwner()">
     <div id="log-getSwapsByDesiredOwner"></div>
+  </div>
+
+  <div>
+    <input type="button" value="acceptRequest" onclick="acceptRequest()">
   </div>
 
 
