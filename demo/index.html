@@ -13,20 +13,34 @@
 <body>
   <h1>NFT Swap</h1>
   <form>
-    <label for="address1">Address 1:</label>
-    <input type="text" id="address1" name="address1" size="40">
-    <label for="tokenid1">Token ID 1:</label>
-    <input type="text" id="tokenid1" name="tokenid1" size="40"><br>
-  
-    <label for="address2">Address 2:</label>
-    <input type="text" id="address2" name="address2" size="40">
-    <label for="tokenid2">Token ID 2:</label>
-    <input type="text" id="tokenid2" name="tokenid2" size="40"><br>
-  
+    <div>
+      <h4>Want NFT</h4>
+      <label for="address1">Address 1:</label>
+      <input type="text" id="address1" name="address1" size="40">
+      <label for="tokenid1">Token ID 1:</label>
+      <input type="text" id="tokenid1" name="tokenid1" size="40">
+    </div>
+
+    <div>
+      <h4>Give NFT</h4>
+      <label for="address2">Address 2:</label>
+      <input type="text" id="address2" name="address2" size="40">
+      <label for="tokenid2">Token ID 2:</label>
+      <input type="text" id="tokenid2" name="tokenid2" size="40">
+    </div>
+  </form>
+
+  <div>
     <input type="button" value="createRequest" onclick="createRequest()">
-    <br/>
+  </div>
+
+  <div>
     <input type="button" value="acceptRequest" onclick="acceptRequest()">
-  </form>  
+  </div>
+
+  <div>
+    <input type="button" value="cancelRequest" onclick="cancelRequest()">
+  </div>
 
   <div>
     <input type="button" value="getSwapsByReleaseOwner" onclick="getSwapsByReleaseOwner()">
@@ -38,9 +52,6 @@
     <div id="log-getSwapsByDesiredOwner"></div>
   </div>
 
-  <div>
-    <input type="button" value="cancelRequest" onclick="cancelRequest()">
-  </div>
 
 </body>
 </html>
