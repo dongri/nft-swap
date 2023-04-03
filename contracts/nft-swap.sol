@@ -14,7 +14,8 @@ contract NFTSwap is Initializable {
         uint256 releaseTokenId;
     }
 
-    mapping(address => SwapNFT[]) private swaps;
+    mapping(address => SwapNFT[]) private swapsByReleaseOwner;
+    mapping(address => SwapNFT[]) private swapsByDesiredOwner;
 
     event EventCreateRequest(address desiredERC721Address, uint256 desiredTokenId, address releaseERC721Address, uint256 releaseTokenId);
     event EventCancelRequest(address desiredERC721Address, uint256 desiredTokenId, address releaseERC721Address, uint256 releaseTokenId);
@@ -33,20 +34,24 @@ contract NFTSwap is Initializable {
         address operator = releaseContract.getApproved(_releaseTokenId);
         require(operator == address(this), "Token is not approved for swap");
 
-        uint foundIndex = _foundIndex(msg.sender, _desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
-        require(foundIndex == MAX_INT_TYPE, "Swap already exists");
+        uint foundIndexRelease = _foundIndexRelease(msg.sender, _desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
+        require(foundIndexRelease == MAX_INT_TYPE, "Swap already exists");
 
         SwapNFT memory newSwapNFT = SwapNFT(_desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
-        swaps[msg.sender].push(newSwapNFT);
+        swapsByReleaseOwner[msg.sender].push(newSwapNFT);
+
+        address desiredOwner = ERC721(_desiredERC721Address).ownerOf(_desiredTokenId);
+        swapsByDesiredOwner[desiredOwner].push(newSwapNFT);
 
         emit EventCreateRequest(_desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
     }
 
     function CancelRequest(address _desiredERC721Address, uint256 _desiredTokenId, address _releaseERC721Address, uint256 _releaseTokenId) public {
-        uint foundIndex = _foundIndex(msg.sender, _desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
+        uint foundIndex = _foundIndexRelease(msg.sender, _desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
         require(foundIndex != MAX_INT_TYPE, "Swap not found");
 
-        _removeSwapNFT(msg.sender, foundIndex);
+        _removeSwapNFTRelease(msg.sender, foundIndex);
+        _removeSwapNFTDesired(ERC721(_desiredERC721Address).ownerOf(_desiredTokenId), foundIndex);
 
         emit EventCancelRequest(_desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
     }
@@ -54,9 +59,9 @@ contract NFTSwap is Initializable {
     function AcceptRequest(address _desiredERC721Address, uint256 _desiredTokenId, address _releaseERC721Address, uint256 _releaseTokenId) public {
         ERC721 releaseContract = ERC721(_releaseERC721Address);
         address releaseOwner = releaseContract.ownerOf(_releaseTokenId);
-        uint foundIndex = _foundIndex(releaseOwner, _desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
-        require(foundIndex != MAX_INT_TYPE, "Swap not found");
-        SwapNFT memory swapNFT = swaps[releaseOwner][foundIndex];
+        uint foundIndexRelease = _foundIndexRelease(releaseOwner, _desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
+        require(foundIndexRelease != MAX_INT_TYPE, "Swap not found");
+        SwapNFT memory swapNFT = swapsByReleaseOwner[releaseOwner][foundIndexRelease];
         ERC721 desiredContract = ERC721(_desiredERC721Address);
         address desiredOwner = desiredContract.ownerOf(_desiredTokenId);
 
@@ -69,26 +74,39 @@ contract NFTSwap is Initializable {
         desiredContract.safeTransferFrom(desiredOwner, releaseOwner, desiredTokenId);
         releaseContract.safeTransferFrom(releaseOwner, desiredOwner, releaseTokenId);
 
-        _removeSwapNFT(releaseOwner, foundIndex);
+        _removeSwapNFTRelease(releaseOwner, foundIndexRelease);
+        _removeSwapNFTDesired(desiredOwner, foundIndexRelease);
 
         emit EventAcceptRequest(_desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
     }
 
-    function GetSwaps(address _owner) public view returns (SwapNFT[] memory) {
-        return swaps[_owner];
+    function GetSwapsByReleaseOwner(address _owner) public view returns (SwapNFT[] memory) {
+        return swapsByReleaseOwner[_owner];
     }
 
-    function _removeSwapNFT(address _owner, uint256 _index) private {
-        if (_index >= swaps[_owner].length) return;
-        for (uint i = _index; i < swaps[_owner].length - 1; i++){
-            swaps[_owner][i] = swaps[_owner][i+1];
+    function GetSwapsByDesiredOwner(address _owner) public view returns (SwapNFT[] memory) {
+        return swapsByDesiredOwner[_owner];
+    }
+
+    function _removeSwapNFTRelease(address _owner, uint256 _index) private {
+        if (_index >= swapsByReleaseOwner[_owner].length) return;
+        for (uint i = _index; i < swapsByReleaseOwner[_owner].length - 1; i++){
+            swapsByReleaseOwner[_owner][i] = swapsByReleaseOwner[_owner][i+1];
         }
-        swaps[_owner].pop();
+        swapsByReleaseOwner[_owner].pop();
     }
 
-    function _foundIndex(address _owner, address _desiredERC721Address, uint256 _desiredTokenId, address _releaseERC721Address, uint256 _releaseTokenId) private view returns (uint256) {
-        for (uint i = 0; i < swaps[_owner].length; i++) {
-            SwapNFT memory swapNFT = swaps[_owner][i];
+    function _removeSwapNFTDesired(address _owner, uint256 _index) private {
+        if (_index >= swapsByDesiredOwner[_owner].length) return;
+        for (uint i = _index; i < swapsByDesiredOwner[_owner].length - 1; i++){
+            swapsByDesiredOwner[_owner][i] = swapsByDesiredOwner[_owner][i+1];
+        }
+        swapsByDesiredOwner[_owner].pop();
+    }
+
+    function _foundIndexRelease(address _owner, address _desiredERC721Address, uint256 _desiredTokenId, address _releaseERC721Address, uint256 _releaseTokenId) private view returns (uint256) {
+        for (uint i = 0; i < swapsByReleaseOwner[_owner].length; i++) {
+            SwapNFT memory swapNFT = swapsByReleaseOwner[_owner][i];
             if (swapNFT.desiredERC721Address == _desiredERC721Address && swapNFT.desiredTokenId == _desiredTokenId && swapNFT.releaseERC721Address == _releaseERC721Address && swapNFT.releaseTokenId == _releaseTokenId) {
                 return i;
             }

@@ -34,6 +34,11 @@
       "address": "0x752f365FA73D28AC27dE2904280BC2F37992B195",
       "txHash": "0xd29a5b85477e27ad7a712dbe27ffae37bec1d9bd2d561811c899337a42309008",
       "kind": "transparent"
+    },
+    {
+      "address": "0x44bE7Fe9c0540Cb3E2f9e573F9c46AA6D0974842",
+      "txHash": "0x873dbd846fc30bc30f4523a3d79ee19152f94d05170cdfc8abbf6d588acd2ac2",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -829,6 +834,104 @@
             "numberOfBytes": "32"
           },
           "t_struct(SwapNFT)2983_storage": {
+            "label": "struct NFTSwap.SwapNFT",
+            "members": [
+              {
+                "label": "desiredERC721Address",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "desiredTokenId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "releaseERC721Address",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "releaseTokenId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "94597c7053f451013ed77351cdf6b52fdb75e55dd832be5f3f345d430868ec1e": {
+      "address": "0x85945cDFD600B85e76e973e221606E463560D30F",
+      "txHash": "0x488d70689a97ffdde9af40b776bbbb650cf41dfe7ee2547a513a88f40a7da5b8",
+      "layout": {
+        "solcVersion": "0.8.9",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "swapsByReleaseOwner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_mapping(t_address,t_array(t_struct(SwapNFT)3011_storage)dyn_storage)",
+            "contract": "NFTSwap",
+            "src": "contracts/nft-swap.sol:17"
+          },
+          {
+            "label": "swapsByDesiredOwner",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_address,t_array(t_struct(SwapNFT)3011_storage)dyn_storage)",
+            "contract": "NFTSwap",
+            "src": "contracts/nft-swap.sol:18"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_struct(SwapNFT)3011_storage)dyn_storage": {
+            "label": "struct NFTSwap.SwapNFT[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_array(t_struct(SwapNFT)3011_storage)dyn_storage)": {
+            "label": "mapping(address => struct NFTSwap.SwapNFT[])",
+            "numberOfBytes": "32"
+          },
+          "t_struct(SwapNFT)3011_storage": {
             "label": "struct NFTSwap.SwapNFT",
             "members": [
               {

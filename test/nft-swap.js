@@ -61,14 +61,14 @@ describe("NFTSwap", function () {
     await nft2ContractWithAdd2.mint(addr2.address, 2);
 
     expect(await nftSwapContractWithAdd1.CreateRequest(nft2.address, 2, nft1.address, 1)).to.be.ok;
-    const swapsBefore = await nftSwapContractWithAdd1.GetSwaps(addr1.address);
+    const swapsBefore = await nftSwapContractWithAdd1.GetSwapsByReleaseOwner(addr1.address);
     expect(swapsBefore.length).to.equal(1);
 
     await expect(nftSwapContractWithAdd1.CancelRequest(nft2.address, 2, nft1.address, 2)).to.be.revertedWith("Swap not found");
     await expect(nftSwapContractWithAdd1.CancelRequest(nft2.address, 1, nft1.address, 1)).to.be.revertedWith("Swap not found");
 
     expect(await nftSwapContractWithAdd1.CancelRequest(nft2.address, 2, nft1.address, 1)).to.be.ok;
-    const swapsAfter = await nftSwapContractWithAdd1.GetSwaps(addr1.address);
+    const swapsAfter = await nftSwapContractWithAdd1.GetSwapsByReleaseOwner(addr1.address);
     expect(swapsAfter.length).to.equal(0);
 
     await nft1ContractWithAdd1.mint(addr1.address, 2);
@@ -79,11 +79,11 @@ describe("NFTSwap", function () {
     expect(await nftSwapContractWithAdd1.CreateRequest(nft2.address, 2, nft1.address, 1)).to.be.ok;
     expect(await nftSwapContractWithAdd1.CreateRequest(nft2.address, 2, nft1.address, 2)).to.be.ok;
     expect(await nftSwapContractWithAdd1.CreateRequest(nft2.address, 2, nft1.address, 3)).to.be.ok;
-    let swaps = await nftSwapContractWithAdd1.GetSwaps(addr1.address);
+    let swaps = await nftSwapContractWithAdd1.GetSwapsByReleaseOwner(addr1.address);
     expect(swaps.length).to.equal(3);
 
     expect(await nftSwapContractWithAdd1.CancelRequest(nft2.address, 2, nft1.address, 1)).to.be.ok;
-    swaps = await nftSwapContractWithAdd1.GetSwaps(addr1.address);
+    swaps = await nftSwapContractWithAdd1.GetSwapsByReleaseOwner(addr1.address);
     expect(swaps.length).to.equal(2);
   
   });
@@ -99,7 +99,7 @@ describe("NFTSwap", function () {
     await nft2ContractWithAdd2.mint(addr2.address, 2);
 
     expect(await nftSwapContractWithAdd1.CreateRequest(nft2.address, 2, nft1.address, 1)).to.be.ok;
-    const swapsBefore = await nftSwapContractWithAdd1.GetSwaps(addr1.address);
+    const swapsBefore = await nftSwapContractWithAdd1.GetSwapsByReleaseOwner(addr1.address);
     expect(swapsBefore.length).to.equal(1);
 
     const nftSwapContractWithAdd2 = await swap.connect(addr2);
@@ -119,5 +119,21 @@ describe("NFTSwap", function () {
 
   });
   
+  it("should swaps from swap request", async function () {
+    const nftSwapContractWithAdd1 = await swap.connect(addr1);
 
+    const nft1ContractWithAdd1 = await nft1.connect(addr1);
+    await nft1ContractWithAdd1.mint(addr1.address, 1);
+    await nft1ContractWithAdd1.approve(swap.address, 1);
+
+    const nft2ContractWithAdd2 = await nft2.connect(addr2);
+    await nft2ContractWithAdd2.mint(addr2.address, 2);
+
+    expect(await nftSwapContractWithAdd1.CreateRequest(nft2.address, 2, nft1.address, 1)).to.be.ok;
+    const swapsByReleaseOwner = await nftSwapContractWithAdd1.GetSwapsByReleaseOwner(addr1.address);
+    expect(swapsByReleaseOwner.length).to.equal(1);
+
+    const swapsByDesried = await nftSwapContractWithAdd1.GetSwapsByDesiredOwner(addr2.address);
+    expect(swapsByDesried.length).to.equal(1);
+  });
 });

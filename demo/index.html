@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NFT Swap</title>
+  
+  <script src="./web3.min.js"></script>
+  <script src="./script.js"></script>
+
+</head>
+<body>
+  <h1>NFT Swap</h1>
+  <form>
+    <label for="address1">Address 1:</label>
+    <input type="text" id="address1" name="address1" size="40">
+    <label for="tokenid1">Token ID 1:</label>
+    <input type="text" id="tokenid1" name="tokenid1" size="40"><br>
+  
+    <label for="address2">Address 2:</label>
+    <input type="text" id="address2" name="address2" size="40">
+    <label for="tokenid2">Token ID 2:</label>
+    <input type="text" id="tokenid2" name="tokenid2" size="40"><br>
+  
+    <input type="button" value="createRequest" onclick="createRequest()">
+    <br/>
+    <input type="button" value="acceptRequest" onclick="acceptRequest()">
+  </form>  
+
+  <div>
+    <input type="button" value="getSwapsByReleaseOwner" onclick="getSwapsByReleaseOwner()">
+    <div id="log-getSwapsByReleaseOwner"></div>
+  </div>
+
+  <div>
+    <input type="button" value="getSwapsByDesiredOwner" onclick="getSwapsByDesiredOwner()">
+    <div id="log-getSwapsByDesiredOwner"></div>
+  </div>
+
+  <div>
+    <input type="button" value="cancelRequest" onclick="cancelRequest()">
+  </div>
+
+</body>
+</html>
