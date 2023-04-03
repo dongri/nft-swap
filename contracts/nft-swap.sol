@@ -33,8 +33,17 @@ contract NFTSwap is Initializable {
         address operator = releaseContract.getApproved(_releaseTokenId);
         require(operator == address(this), "Token is not approved for swap");
 
-        SwapNFT memory swapNFT = SwapNFT(_desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
-        swaps[msg.sender].push(swapNFT);
+        uint foundIndex = MAX_INT_TYPE;
+        for (uint i = 0; i < swaps[msg.sender].length; i++) {
+            SwapNFT memory swapNFT = swaps[msg.sender][i];
+            if (swapNFT.desiredERC721Address == _desiredERC721Address && swapNFT.desiredTokenId == _desiredTokenId && swapNFT.releaseERC721Address == _releaseERC721Address && swapNFT.releaseTokenId == _releaseTokenId) {
+                foundIndex = i;
+                break;
+            }
+        }
+        require(foundIndex == MAX_INT_TYPE, "Swap already exists"); 
+        SwapNFT memory newSwapNFT = SwapNFT(_desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
+        swaps[msg.sender].push(newSwapNFT);
         emit EventCreateRequest(_desiredERC721Address, _desiredTokenId, _releaseERC721Address, _releaseTokenId);
     }
 

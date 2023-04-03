@@ -46,6 +46,8 @@ describe("NFTSwap", function () {
 
     expect(nftSwapContractWithAdd1.CreateRequest(nft2.address, 2, nft1.address, 1)).to.be.ok;
 
+    await expect(nftSwapContractWithAdd1.CreateRequest(nft2.address, 2, nft1.address, 1)).to.be.revertedWith("Swap already exists");
+
   });
 
   it("should cancel a swap request", async function () {
